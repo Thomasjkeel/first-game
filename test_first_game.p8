@@ -18,17 +18,12 @@ function _init()
   y=64,
   color=9,
   name="thomas",
-  width=8,
-  height=8,
   radius=4,
   move_speed=1,
   mandarin_alligned=false,
   draw=function(self)
-   spr(1, self.x, self.y)
-   rect(self.x-1,self.y-1,self.x+self.width, self.y+self.height, 13)
+   spr(1, self.x-3, self.y-4)
    -- circ(self.x,self.y,self.radius,12)
-   -- print(self.alligned,self.x+10, self.y, 7)
-   -- print(self.name, self.x-7, self.y-7, 7)
   end,
   update=function(self)
    if btn(0) then
@@ -46,16 +41,8 @@ function _init()
   end,
    -- check hit detection
   check_collision=function(self,other)
-   local left1=self.x
-   local right1=self.x+self.width
-   local top1=self.y
-   local bottom1=self.y+self.height
-   local left2=other.x
-   local right2=other.x+other.width
-   local top2=other.y
-   local bottom2=other.y+other.height
     -- collect the other (coin or mandarin)
-   if not other.iscollected and rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2) then
+   if not other.iscollected and circ_overlapping(self.x,self.y,self.radius,other.x,other.y,other.radius) then
     other.iscollected=true
     if other.name == "coin" then
      sfx(0)
@@ -114,16 +101,15 @@ function make_coin()
  local coin={
   x=flr(rnd(40))+64,
   y=flr(rnd(40))+64,
-  width=6,
-  height=7,
+  radius=3,
   name="coin",
   iscollected=false,
   update=function(self)
   end,
   draw=function(self)
    if not self.iscollected then
-    spr(3, self.x, self.y)
-    -- rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
+    spr(3, self.x-3, self.y-4)
+    -- circ(self.x,self.y,self.radius,12)
    end
   end
  }
@@ -134,32 +120,19 @@ function make_mandarin()
  local mandarin={
   x=flr(rnd(40))+5,
   y=flr(rnd(40))+10,
-  width=6,
-  height=6,
+  radius=3,
   name="mandarin",
   iscollected=false,
   update=function(self)
   end,
   draw=function(self)
    if not self.iscollected then
-    spr(4, self.x, self.y)
-    -- rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
+    spr(4, self.x-3, self.y-3)
+    -- circ(self.x,self.y,self.radius,12)
    end
   end
  }
  return mandarin
-end
-
-function check_hit(x,y,left,right,top,bottom)
-  return left<x and x<right and top<y and y<bottom
-end
-
-function lines_overlapping(min1,max1,min2,max2)
- return max1>min2 and max2>min1
-end
-
-function rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2)
- return lines_overlapping(left1,right1,left2,right2) and lines_overlapping(top1,bottom1,top2,bottom2)
 end
 
 function circ_overlapping(x1,y1,r1,x2,y2,r2)
