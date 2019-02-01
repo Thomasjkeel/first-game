@@ -7,8 +7,12 @@ __lua__
 local player
 local mandarin
 local coin
+local score
+local mandarin_score
 
 function _init()
+ score=0
+ mandarin_score=0
  player = {
   x=64,
   y=64,
@@ -17,11 +21,12 @@ function _init()
   width=8,
   height=8,
   move_speed=2,
-  vertically_alligned=false,
+  alligned=false,
+  mandarin_alligned=false,
   draw=function(self)
    spr(1, self.x, self.y)
    rect(self.x-1,self.y-1,self.x+self.width, self.y+self.height, 12)
-   print(self.vertically_alligned,self.x+10, self.y, 7)
+   print(self.alligned,self.x+10, self.y, 7)
    -- print(self.name, self.x-7, self.y-7, 7)
   end,
   update=function(self)
@@ -43,9 +48,26 @@ function _init()
    local top=self.y
    local bottom=self.y+self.height
    if left<coin.x and coin.x<right and top<coin.y and coin.y<bottom then
-    self.vertically_alligned=true
+    self.alligned=true
    else
-    self.vertically_alligned=false
+    self.alligned=false
+   end
+   -- collect the coin
+   if self.alligned and not coin.iscollected then
+    coin.iscollected=true
+    sfx(0)
+    score+=1
+   end
+   -- mandarin hit detection
+   if left<mandarin.x and mandarin.x<right and top<mandarin.y and mandarin.y<bottom then
+    self.mandarin_alligned=true
+   else
+    self.mandarin_alligned=false
+   end
+   if self.mandarin_alligned and not mandarin.iscollected then
+    mandarin.iscollected=true
+    sfx(2)
+    mandarin_score+=1
    end
 
   end
@@ -54,22 +76,28 @@ function _init()
  coin={
   x=flr(rnd(40))+64,
   y=flr(rnd(40))+64,
+  iscollected=false,
   update=function(self)
   end,
   draw=function(self)
-   spr(3, self.x-3, self.y-4)
-   pset(self.x,self.y,2)
+   if not self.iscollected then
+    spr(3, self.x-3, self.y-4)
+    pset(self.x,self.y,2)
+   end
   end
  }
  -- mandarin
  mandarin={
   x=flr(rnd(40))+5,
-  y=flr(rnd(40))+5,
+  y=flr(rnd(40))+10,
+  iscollected=false,
   update=function(self)
   end,
   draw=function(self)
-   spr(4, self.x-3, self.y-4)
-   pset(self.x,self.y,10)
+   if not self.iscollected then
+    spr(4, self.x-3, self.y-4)
+    pset(self.x,self.y,10)
+   end
   end
  }
 end
@@ -82,6 +110,8 @@ end
 
 function _draw()
  cls(13)
+ print("score: " .. score, 5, 5, 7)
+ print("mandarins: " .. mandarin_score, 75, 5, 7)
  player:draw()
  coin:draw()
  mandarin:draw()
@@ -107,5 +137,6 @@ __map__
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __sfx__
-000300000f10017200182002520023200202001c2001d2001620014200142000f1000c100141001a1002010025100291003310036100151001610000000000000000000000000000000000000000000000000000
+000400002d0102f02033030350503906039070390203902001000290002c0000f1000c100141001a1002010025100291003310036100151001610000000000000000000000000000000000000000000000000000
 000200000755007550075500755007550105500c550145500e5501355016550035000f500045000f5000450004500000000000000000000000000000000000000000000000000000000000000000000000000000
+0008000010150101501e100171502110010150101502c100141502d100281501e000300002f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
