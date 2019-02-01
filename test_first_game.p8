@@ -18,12 +18,15 @@ function _init()
   y=64,
   color=9,
   name="thomas",
+  width=6,
+  height=8,
   radius=4,
   move_speed=1,
   mandarin_alligned=false,
   draw=function(self)
    spr(1, self.x-3, self.y-4)
    -- circ(self.x,self.y,self.radius,12)
+   rect(self.x-3,self.y-4,self.x-3+self.width,self.y-4+self.height, 12)
   end,
   update=function(self)
    if btn(0) then
@@ -68,7 +71,7 @@ function _init()
  -- blocks
  blocks={
   make_block(50,50),
-  make_block(60,60)
+  make_block(50,40)
  }
 
 end
@@ -113,6 +116,8 @@ function make_coin()
  local coin={
   x=flr(rnd(40))+64,
   y=flr(rnd(40))+64,
+  width=6,
+  height=7,
   radius=3,
   name="coin",
   iscollected=false,
@@ -122,6 +127,7 @@ function make_coin()
    if not self.iscollected then
     spr(3, self.x-3, self.y-4)
     -- circ(self.x,self.y,self.radius,12)
+    rect(self.x-3,self.y-4,self.x-3+self.width,self.y-4+self.height,12)
    end
   end
  }
@@ -132,6 +138,8 @@ function make_mandarin()
  local mandarin={
   x=flr(rnd(40))+5,
   y=flr(rnd(40))+10,
+  width=6,
+  height=6,
   radius=3,
   name="mandarin",
   iscollected=false,
@@ -141,6 +149,7 @@ function make_mandarin()
    if not self.iscollected then
     spr(4, self.x-3, self.y-3)
     -- circ(self.x,self.y,self.radius,12)
+    rect(self.x-3,self.y-3,self.x-3+self.width,self.y-3+self.height,12)
    end
   end
  }
@@ -157,11 +166,20 @@ function make_block(x,y)
   end,
   draw=function(self)
    spr(2,self.x,self.y)
+   rect(self.x,self.y,self.x+self.width,self.y+self.height, 12)
   end
  }
  return block
 end
 
+
+function lines_overlapping(min1,max1,min2,max2)
+ return max1>min2 and max2>min1
+end
+
+function rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2)
+ return lines_overlapping(left1,right1,left2,right2) and lines_overlapping(top1,bottom1,top2,bottom2)
+end
 
 function circ_overlapping(x1,y1,r1,x2,y2,r2)
  local dx=mid(-100,x2-x1,100)
