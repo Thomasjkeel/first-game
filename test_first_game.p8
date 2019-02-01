@@ -20,12 +20,13 @@ function _init()
   name="thomas",
   width=8,
   height=8,
+  radius=4,
   move_speed=1,
-  alligned=false,
   mandarin_alligned=false,
   draw=function(self)
    spr(1, self.x, self.y)
    rect(self.x-1,self.y-1,self.x+self.width, self.y+self.height, 13)
+   -- circ(self.x,self.y,self.radius,12)
    -- print(self.alligned,self.x+10, self.y, 7)
    -- print(self.name, self.x-7, self.y-7, 7)
   end,
@@ -53,10 +54,8 @@ function _init()
    local right2=other.x+other.width
    local top2=other.y
    local bottom2=other.y+other.height
-
-   self.alligned=rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2)
     -- collect the other (coin or mandarin)
-   if self.alligned and not other.iscollected then
+   if not other.iscollected and rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2) then
     other.iscollected=true
     if other.name == "coin" then
      sfx(0)
@@ -161,6 +160,13 @@ end
 
 function rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2)
  return lines_overlapping(left1,right1,left2,right2) and lines_overlapping(top1,bottom1,top2,bottom2)
+end
+
+function circ_overlapping(x1,y1,r1,x2,y2,r2)
+ local dx=x2-x1
+ local dy=y2-y1
+ local dist=sqrt(dx*dx+dy*dy)
+ return dist<r1+r2
 end
 
 __gfx__
