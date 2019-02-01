@@ -5,8 +5,8 @@ __lua__
 -- globals --
 -- variables --
 local player
-local mandarin
-local coin
+local mandarins
+local coins
 local score
 local mandarin_score
 
@@ -25,8 +25,8 @@ function _init()
   mandarin_alligned=false,
   draw=function(self)
    spr(1, self.x, self.y)
-   rect(self.x-1,self.y-1,self.x+self.width, self.y+self.height, 12)
-   print(self.alligned,self.x+10, self.y, 7)
+   rect(self.x-1,self.y-1,self.x+self.width, self.y+self.height, 13)
+   -- print(self.alligned,self.x+10, self.y, 7)
    -- print(self.name, self.x-7, self.y-7, 7)
   end,
   update=function(self)
@@ -42,70 +42,55 @@ function _init()
    if btn(3) then
     self.y+=self.move_speed
    end
+  end,
    -- check hit detection
+  check_collision=function(self,other)
    local left=self.x
    local right=self.x+self.width
    local top=self.y
    local bottom=self.y+self.height
-   if left<coin.x and coin.x<right and top<coin.y and coin.y<bottom then
-    self.alligned=true
-   else
-    self.alligned=false
-   end
-   -- collect the coin
-   if self.alligned and not coin.iscollected then
-    coin.iscollected=true
-    sfx(0)
-    score+=1
-   end
-   -- mandarin hit detection
-   if left<mandarin.x and mandarin.x<right and top<mandarin.y and mandarin.y<bottom then
-    self.mandarin_alligned=true
-   else
-    self.mandarin_alligned=false
-   end
-   if self.mandarin_alligned and not mandarin.iscollected then
-    mandarin.iscollected=true
-    sfx(2)
-    mandarin_score+=1
-   end
-
+    if left<other.x and other.x<right and top<other.y and other.y<bottom then
+     self.alligned=true
+    else
+     self.alligned=false
+    end
+    -- collect the other (coin or mandarin)
+    if self.alligned and not other.iscollected then
+     other.iscollected=true
+     if other.name == "coin" then
+      sfx(0)
+      score+=1
+     else
+      sfx(2)
+      mandarin_score+=1
+    end
   end
+ end
  }
  -- coin
- coin={
-  x=flr(rnd(40))+64,
-  y=flr(rnd(40))+64,
-  iscollected=false,
-  update=function(self)
-  end,
-  draw=function(self)
-   if not self.iscollected then
-    spr(3, self.x-3, self.y-4)
-    pset(self.x,self.y,2)
-   end
-  end
- }
- -- mandarin
- mandarin={
-  x=flr(rnd(40))+5,
-  y=flr(rnd(40))+10,
-  iscollected=false,
-  update=function(self)
-  end,
-  draw=function(self)
-   if not self.iscollected then
-    spr(4, self.x-3, self.y-4)
-    pset(self.x,self.y,10)
-   end
-  end
+ coins={
+  make_coin(),
+  make_coin(),
+  make_coin()
+}
+
+ -- mandarins
+ mandarins={
+  make_mandarin(),
+  make_mandarin()
  }
 end
 
 function _update()
  player:update()
- coin:update()
- mandarin:update()
+ for coin in all(coins) do
+  coin:update()
+  player:check_collision(coin)
+ end
+ for mandarin in all(mandarins) do
+  mandarin:update()
+  player:check_collision(mandarin)
+ end
 end
 
 function _draw()
@@ -113,8 +98,53 @@ function _draw()
  print("score: " .. score, 5, 5, 7)
  print("mandarins: " .. mandarin_score, 75, 5, 7)
  player:draw()
- coin:draw()
- mandarin:draw()
+ -- coin:draw()
+ -- mandarin:draw()
+ local coin
+ for coin in all(coins) do
+  coin:draw()
+ end
+ local mandarin
+ for mandarin in all(mandarins) do
+  mandarin:draw()
+ end
+end
+
+
+function make_coin()
+ local coin={
+  x=flr(rnd(40))+64,
+  y=flr(rnd(40))+64,
+  name="coin",
+  iscollected=false,
+  update=function(self)
+  end,
+  draw=function(self)
+   if not self.iscollected then
+    spr(3, self.x-3, self.y-4)
+    -- pset(self.x,self.y,2)
+   end
+  end
+ }
+ return coin
+end
+
+function make_mandarin()
+ local mandarin={
+  x=flr(rnd(40))+5,
+  y=flr(rnd(40))+10,
+  name="mandarin",
+  iscollected=false,
+  update=function(self)
+  end,
+  draw=function(self)
+   if not self.iscollected then
+    spr(4, self.x-3, self.y-4)
+    -- pset(self.x,self.y,10)
+   end
+  end
+ }
+ return mandarin
 end
 
 
@@ -139,4 +169,4 @@ __map__
 __sfx__
 000400002d0102f02033030350503906039070390203902001000290002c0000f1000c100141001a1002010025100291003310036100151001610000000000000000000000000000000000000000000000000000
 000200000755007550075500755007550105500c550145500e5501355016550035000f500045000f5000450004500000000000000000000000000000000000000000000000000000000000000000000000000000
-0008000010150101501e100171502110010150101502c100141502d100281501e000300002f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000500001e7501a7501e750287502f750317500b700127000b7000f700117001c700300002f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
