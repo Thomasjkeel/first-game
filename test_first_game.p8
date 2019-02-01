@@ -24,9 +24,9 @@ function _init()
   move_speed=1,
   mandarin_alligned=false,
   draw=function(self)
-   spr(1, self.x-3, self.y-4)
+   spr(1, self.x, self.y)
    -- circ(self.x,self.y,self.radius,12)
-   rect(self.x-3,self.y-4,self.x-3+self.width,self.y-4+self.height, 12)
+   rect(self.x,self.y,self.x+self.width,self.y+self.height, 12)
   end,
   update=function(self)
    if btn(0) then
@@ -45,7 +45,8 @@ function _init()
    -- check hit detection
   check_collision=function(self,other)
     -- collect the other (coin or mandarin)
-   if not other.iscollected and circ_overlapping(self.x,self.y,self.radius,other.x,other.y,other.radius) then
+   -- if not other.iscollected and circ_overlapping(self.x,self.y,self.radius,other.x,other.y,other.radius) then
+   if not other.iscollected and rect_overlapping(self.x,self.y,self.x+self.width,self.y+self.height,other.x,other.y,other.x+other.width,other.y+other.height) then
     other.iscollected=true
     if other.name == "coin" then
      sfx(0)
@@ -55,6 +56,15 @@ function _init()
      mandarin_score+=1
     end
    end
+ end,
+
+ check_for_block_collision=function(self, block)
+  if bounding_boxes_overlapping(self,block) then
+   -- pal(9,12)
+   self.x+=1
+   -- self.y+=1
+  end
+
  end
  }
  -- coin
@@ -88,6 +98,7 @@ function _update()
  end
  for block in all(blocks) do
   block:update()
+  player:check_for_block_collision(block)
  end
 end
 
@@ -125,9 +136,9 @@ function make_coin()
   end,
   draw=function(self)
    if not self.iscollected then
-    spr(3, self.x-3, self.y-4)
+    spr(3, self.x, self.y)
     -- circ(self.x,self.y,self.radius,12)
-    rect(self.x-3,self.y-4,self.x-3+self.width,self.y-4+self.height,12)
+    rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
    end
   end
  }
@@ -147,9 +158,9 @@ function make_mandarin()
   end,
   draw=function(self)
    if not self.iscollected then
-    spr(4, self.x-3, self.y-3)
+    spr(4, self.x, self.y)
     -- circ(self.x,self.y,self.radius,12)
-    rect(self.x-3,self.y-3,self.x-3+self.width,self.y-3+self.height,12)
+    rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
    end
   end
  }
@@ -177,7 +188,7 @@ function lines_overlapping(min1,max1,min2,max2)
  return max1>min2 and max2>min1
 end
 
-function rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2)
+function rect_overlapping(left1,top1,right1,bottom1,left2,top2,right2,bottom2)
  return lines_overlapping(left1,right1,left2,right2) and lines_overlapping(top1,bottom1,top2,bottom2)
 end
 
@@ -185,6 +196,10 @@ function circ_overlapping(x1,y1,r1,x2,y2,r2)
  local dx=mid(-100,x2-x1,100)
  local dy=mid(-100,y2-y1,100)
  return dx*dx+dy*dy<(r1+r2)*(r1+r2)
+end
+
+function bounding_boxes_overlapping(obj1,obj2)
+ return rect_overlapping(obj1.x,obj1.y,obj1.x+obj1.width,obj1.y+obj1.height,obj2.x,obj2.y,obj2.x+obj2.width,obj2.y+obj2.height)
 end
 
 __gfx__
