@@ -51,16 +51,16 @@ function _init()
    local bottom=self.y+self.height
    self.alligned=check_hit(other.x,other.y,left,right,top,bottom)
     -- collect the other (coin or mandarin)
-    if self.alligned and not other.iscollected then
-     other.iscollected=true
-     if other.name == "coin" then
-      sfx(0)
-      score+=1
-     else
-      sfx(2)
-      mandarin_score+=1
+   if self.alligned and not other.iscollected then
+    other.iscollected=true
+    if other.name == "coin" then
+     sfx(0)
+     score+=1
+    else
+     sfx(2)
+     mandarin_score+=1
     end
-  end
+   end
  end
  }
  -- coin
@@ -68,7 +68,7 @@ function _init()
   make_coin(),
   make_coin(),
   make_coin()
-}
+ }
 
  -- mandarins
  mandarins={
@@ -121,7 +121,6 @@ function make_coin()
    if not self.iscollected then
     spr(3, self.x, self.y)
     rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
-
    end
   end
  }
@@ -161,6 +160,7 @@ function lines_overlapping(left1,right1,left2,right2)
   return true
  else
   return false
+ end
 end
 
 __gfx__
