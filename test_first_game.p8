@@ -20,7 +20,7 @@ function _init()
   name="thomas",
   width=8,
   height=8,
-  move_speed=2,
+  move_speed=1,
   alligned=false,
   mandarin_alligned=false,
   draw=function(self)
@@ -45,11 +45,16 @@ function _init()
   end,
    -- check hit detection
   check_collision=function(self,other)
-   local left=self.x
-   local right=self.x+self.width
-   local top=self.y
-   local bottom=self.y+self.height
-   self.alligned=check_hit(other.x,other.y,left,right,top,bottom)
+   local left1=self.x
+   local right1=self.x+self.width
+   local top1=self.y
+   local bottom1=self.y+self.height
+   local left2=other.x
+   local right2=other.x+other.width
+   local top2=other.y
+   local bottom2=other.y+other.height
+
+   self.alligned=rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2)
     -- collect the other (coin or mandarin)
    if self.alligned and not other.iscollected then
     other.iscollected=true
@@ -94,8 +99,7 @@ function _draw()
  print("score: " .. score, 5, 5, 7)
  print("mandarins: " .. mandarin_score, 75, 5, 7)
  player:draw()
- -- coin:draw()
- -- mandarin:draw()
+
  local coin
  for coin in all(coins) do
   coin:draw()
@@ -120,7 +124,7 @@ function make_coin()
   draw=function(self)
    if not self.iscollected then
     spr(3, self.x, self.y)
-    rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
+    -- rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
    end
   end
  }
@@ -131,14 +135,16 @@ function make_mandarin()
  local mandarin={
   x=flr(rnd(40))+5,
   y=flr(rnd(40))+10,
+  width=6,
+  height=6,
   name="mandarin",
   iscollected=false,
   update=function(self)
   end,
   draw=function(self)
    if not self.iscollected then
-    spr(4, self.x-3, self.y-4)
-    -- pset(self.x,self.y,10)
+    spr(4, self.x, self.y)
+    -- rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
    end
   end
  }
@@ -149,18 +155,12 @@ function check_hit(x,y,left,right,top,bottom)
   return left<x and x<right and top<y and y<bottom
 end
 
-function lines_overlapping(left1,right1,left2,right2)
- if left2<left1 and left1<right2 then
-  return true
- elseif left2<right1 and right1<right2 then
-  return true
- elseif left1<right2 and left2<right1 then
-  return true
- elseif left1<right2 and right2<right1 then
-  return true
- else
-  return false
- end
+function lines_overlapping(min1,max1,min2,max2)
+ return max1>min2 and max2>min1
+end
+
+function rect_overlapping(left1,right1,top1,bottom1,left2,right2,top2,bottom2)
+ return lines_overlapping(left1,right1,left2,right2) and lines_overlapping(top1,bottom1,top2,bottom2)
 end
 
 __gfx__
