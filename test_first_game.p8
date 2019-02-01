@@ -49,11 +49,7 @@ function _init()
    local right=self.x+self.width
    local top=self.y
    local bottom=self.y+self.height
-    if left<other.x and other.x<right and top<other.y and other.y<bottom then
-     self.alligned=true
-    else
-     self.alligned=false
-    end
+   self.alligned=check_hit(other.x,other.y,left,right,top,bottom)
     -- collect the other (coin or mandarin)
     if self.alligned and not other.iscollected then
      other.iscollected=true
@@ -115,14 +111,17 @@ function make_coin()
  local coin={
   x=flr(rnd(40))+64,
   y=flr(rnd(40))+64,
+  width=6,
+  height=7,
   name="coin",
   iscollected=false,
   update=function(self)
   end,
   draw=function(self)
    if not self.iscollected then
-    spr(3, self.x-3, self.y-4)
-    -- pset(self.x,self.y,2)
+    spr(3, self.x, self.y)
+    rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
+
    end
   end
  }
@@ -147,6 +146,22 @@ function make_mandarin()
  return mandarin
 end
 
+function check_hit(x,y,left,right,top,bottom)
+  return left<x and x<right and top<y and y<bottom
+end
+
+function lines_overlapping(left1,right1,left2,right2)
+ if left2<left1 and left1<right2 then
+  return true
+ elseif left2<right1 and right1<right2 then
+  return true
+ elseif left1<right2 and left2<right1 then
+  return true
+ elseif left1<right2 and right2<right1 then
+  return true
+ else
+  return false
+end
 
 __gfx__
 00000000099999000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
