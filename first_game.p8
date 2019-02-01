@@ -2,15 +2,22 @@ pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
 
+-- globals --
+
+-- variables --
+local player_x
+local player_y
+
 function _init()
- -- intial functions as the game is loaded
 end
 
 function _update()
- -- deals with updating stuff on the screen
 end
 
 function _draw()
- -- deals with drawing stuff to the screen
- rect(10,10, 100, 60, 8) -- first two digits == upper left; second two
+ cls()
+ rect(10,10, 100, 60, 8)
+ circ(40, 40, 10, 14)
+ pset(10, 100, 14)
+ rectfill(80, 10, 90, 20, 11)
 end
