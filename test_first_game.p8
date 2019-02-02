@@ -26,7 +26,18 @@ function _init()
   draw=function(self)
    spr(1, self.x, self.y)
    -- circ(self.x,self.y,self.radius,12)
-   rect(self.x,self.y,self.x+self.width,self.y+self.height, 12)
+   local x,y,w,h=self.x,self.y,self.width,self.height
+   -- bounding box
+   rect(x,y,x+w,y+h, 12)
+   -- bottom hitbox
+   rectfill(x+2,y+(h/2),x+w-2,y+h,8)
+   -- top hitbox
+   rectfill(x+2,y+(h/2),x+w-2,y,12)
+   -- side hitboxes
+   rectfill(x,y+2,x+w/2,y+h-2, 11)
+   rectfill(x+w/2,y+2,x+w,y+h-2, 10)
+
+
   end,
   update=function(self)
    if btn(0) then
@@ -60,9 +71,20 @@ function _init()
 
  check_for_block_collision=function(self, block)
   if bounding_boxes_overlapping(self,block) then
-   -- pal(9,12)
-   self.x+=1
-   -- self.y+=1
+   local top_hitbox={
+    x+2,y+(h/2),x+w-2,y+h
+   }
+   -- top hitbox
+   local bottom_hitbox={
+    x+2,y+(h/2),x+w-2,y
+   }
+   -- side hitboxes
+   local left_hitbox={
+    x,y+2,x+w/2,y+h-2
+   }
+   local right_hitbox={
+    x+w/2,y+2,x+w,y+h-2
+   }
   end
 
  end
