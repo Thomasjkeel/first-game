@@ -4,9 +4,9 @@ __lua__
 
 -- globals --
 -- variables --
-local player
-local mandarins
-local coins
+-- local player
+-- local mandarins
+-- local coins
 local score
 local mandarin_score
 
@@ -18,7 +18,7 @@ function _init()
   y=64,
   color=9,
   name="thomas",
-  width=6,
+  width=7,
   height=8,
   radius=4,
   move_speed=1,
@@ -28,14 +28,14 @@ function _init()
    -- circ(self.x,self.y,self.radius,12)
    local x,y,w,h=self.x,self.y,self.width,self.height
    -- bounding box
-   rect(x,y,x+w,y+h, 12)
-   -- bottom hitbox
-   rectfill(x+2,y+(h/2),x+w-2,y+h,8)
-   -- top hitbox
-   rectfill(x+2,y+(h/2),x+w-2,y,12)
-   -- side hitboxes
-   rectfill(x,y+2,x+w/2,y+h-2, 11)
-   rectfill(x+w/2,y+2,x+w,y+h-2, 10)
+   -- rect(x,y,x+w,y+h, 12)
+   -- -- bottom hitbox
+   -- rectfill(x+2,y+(h/2),x+w-2,y+h,8)
+   -- -- top hitbox
+   -- rectfill(x+2,y+(h/2),x+w-2,y,12)
+   -- -- side hitboxes
+   -- rectfill(x,y+2,x+w/2,y+h-2, 11)
+   -- rectfill(x+w/2,y+2,x+w,y+h-2, 10)
 
 
   end,
@@ -172,7 +172,7 @@ function make_coin()
    if not self.iscollected then
     spr(3, self.x, self.y)
     -- circ(self.x,self.y,self.radius,12)
-    rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
+    -- rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
    end
   end
  }
@@ -194,7 +194,7 @@ function make_mandarin()
    if not self.iscollected then
     spr(4, self.x, self.y)
     -- circ(self.x,self.y,self.radius,12)
-    rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
+    -- rect(self.x,self.y,self.x+self.width,self.y+self.height,12)
    end
   end
  }
@@ -211,7 +211,7 @@ function make_block(x,y)
   end,
   draw=function(self)
    spr(2,self.x,self.y)
-   rect(self.x,self.y,self.x+self.width,self.y+self.height, 12)
+   -- rect(self.x,self.y,self.x+self.width,self.y+self.height, 12)
   end
  }
  return block
