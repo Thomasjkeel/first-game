@@ -36,8 +36,6 @@ function _init()
    -- -- side hitboxes
    -- rectfill(x,y+2,x+w/2,y+h-2, 11)
    -- rectfill(x+w/2,y+2,x+w,y+h-2, 10)
-
-
   end,
   update=function(self)
    if btn(0) then
@@ -71,20 +69,10 @@ function _init()
 
  check_for_block_collision=function(self, block)
   local x,y,w,h=self.x,self.y,self.width,self.height
-  local top_hitbox={
-   x=x+2,y=y,width=w-4,height=h/2
-  }
-  -- top hitbox
-  local bottom_hitbox={
-   x=x+2,y=y+h/2,width=w-4,height=h/2
-  }
-  -- side hitboxes
-  local left_hitbox={
-   x=x,y=y+2,width=w/2,height=h-4
-  }
-  local right_hitbox={
-   x=x+w/2,y=y+2,width=w/2,height=h-4
-  }
+  local top_hitbox={x=x+2,y=y,width=w-4,height=h/2}
+  local bottom_hitbox={x=x+2,y=y+h/2,width=w-4,height=h/2}
+  local left_hitbox={x=x,y=y+2,width=w/2,height=h-4}
+  local right_hitbox={x=x+w/2,y=y+2,width=w/2,height=h-4}
   -- collisions
   if bounding_boxes_overlapping(top_hitbox,block) then
    self.y=block.y+block.height
@@ -113,9 +101,15 @@ function _init()
   make_mandarin()
  }
  -- blocks
+ -- for local block_x,30,80,8 do
+ --  make_block(block_x,80)
+ -- end
+
  blocks={
-  make_block(50,80),
-  make_block(50,40)
+  make_block(50,60),
+  make_block(60,60),
+  make_block(70,70),
+  make_block(80,80)
  }
 
 end
