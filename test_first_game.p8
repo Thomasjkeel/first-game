@@ -9,18 +9,22 @@ __lua__
 -- local coins
 local score
 local mandarin_score
+-- in_air=true
 
 function _init()
  score=0
  mandarin_score=0
  player = {
   x=10,
-  y=62,
+  y=20,
+  vx=0,
+  vy=0,
   color=9,
   name="thomas",
   width=7,
   height=8,
   radius=4,
+  in_air=true,
   move_speed=1,
   mandarin_alligned=false,
   draw=function(self)
@@ -30,16 +34,27 @@ function _init()
 
   end,
   update=function(self)
+   self.vx*=0.5 -- gradual stop (friction)
    if btn(0) then
-    self.x-=self.move_speed
+    self.vx=-self.move_speed
    end
    if btn(1) then
-    self.x+=self.move_speed
+    self.vx=self.move_speed
+   end
+   -- jump button
+   if btn(2) and not self.in_air then
+    self.vy-=2
    end
 
    -- velocity
+   self.vy+=0.2
+   self.vy=mid(-3,self.vy,3)
+   self.vx=mid(-3,self.vx,3)
+   -- apply velocity
    self.x+=self.vx
-   self.y+=self.yx
+   self.y+=self.vy
+   self.in_air=true
+
 
   end,
    -- check hit detection
@@ -60,22 +75,33 @@ function _init()
 
  check_for_block_collision=function(self, block)
   local x,y,w,h=self.x,self.y,self.width,self.height
-  local top_hitbox={x=x+2,y=y,width=w-4,height=h/2}
-  local bottom_hitbox={x=x+2,y=y+h/2,width=w-4,height=h/2}
-  local left_hitbox={x=x,y=y+2,width=w/2,height=h-4}
-  local right_hitbox={x=x+w/2,y=y+2,width=w/2,height=h-4}
+  local top_hitbox={x=x+3,y=y,width=w-6,height=h/2}
+  local bottom_hitbox={x=x+3,y=y+h/2,width=w-6,height=h/2}
+  local left_hitbox={x=x,y=y+3,width=w/2,height=h-6}
+  local right_hitbox={x=x+w/2,y=y+3,width=w/2,height=h-6}
   -- collisions
-  if bounding_boxes_overlapping(top_hitbox,block) then
-   self.y=block.y+block.height
-  end
   if bounding_boxes_overlapping(bottom_hitbox,block) then
    self.y=block.y-self.height
-  end
-  if bounding_boxes_overlapping(left_hitbox,block) then
+   -- set in air and reset velocity
+   if self.vy>0 then
+    self.vy=0
+   end
+   self.in_air=false
+  elseif bounding_boxes_overlapping(left_hitbox,block) then
    self.x=block.x+block.width
-  end
-  if bounding_boxes_overlapping(right_hitbox,block) then
+   if self.vx>0 then
+    self.vx=0
+   end
+  elseif bounding_boxes_overlapping(right_hitbox,block) then
    self.x=block.x-self.width
+   if self.vx<0 then
+    self.vx=0
+   end
+  elseif bounding_boxes_overlapping(top_hitbox,block) then
+   self.y=block.y+block.height
+   if self.vy<0 then
+    self.vy=0
+   end
   end
 
  end
@@ -93,12 +119,14 @@ function _init()
  --  add(mandarins,make_mandarin(8*1,80))
  -- end
  add(mandarins, make_mandarin(80,60))
- for i=1,13 do
+ for i=1,15 do
   add(blocks,make_block(8*i,90))
  end
  add(blocks,make_block(64,82))
  add(blocks,make_block(72,74))
  add(blocks,make_block(80,66))
+ add(blocks, make_block(88,74))
+ add(blocks, make_block(96,82))
 
 end
 
@@ -241,3 +269,4 @@ __sfx__
 000400002d0102f02033030350503906039070390203902001000290002c0000f1000c100141001a1002010025100291003310036100151001610000000000000000000000000000000000000000000000000000
 000200000755007550075500755007550105500c550145500e5501355016550035000f500045000f5000450004500000000000000000000000000000000000000000000000000000000000000000000000000000
 000500001e7501a7501e750287502f750317500b700127000b7000f700117001c700300002f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00020000170501b0502005023050270502d00034000230002e0003b0003f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
