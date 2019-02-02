@@ -110,8 +110,8 @@ function _init()
   add(blocks,make_block(8*i,90))
  end
  add(blocks,make_block(48,82))
- add(blocks,make_block(56,76))
- add(blocks,make_block(64,68))
+ add(blocks,make_block(56,74))
+ add(blocks,make_block(64,66))
 
 end
 
