@@ -15,7 +15,7 @@ function _init()
  mandarin_score=0
  player = {
   x=10,
-  y=82,
+  y=62,
   color=9,
   name="thomas",
   width=7,
@@ -27,15 +27,7 @@ function _init()
    spr(1, self.x, self.y)
    -- circ(self.x,self.y,self.radius,12)
    local x,y,w,h=self.x,self.y,self.width,self.height
-   -- bounding box
-   -- rect(x,y,x+w,y+h, 12)
-   -- -- bottom hitbox
-   -- rectfill(x+2,y+(h/2),x+w-2,y+h,8)
-   -- -- top hitbox
-   -- rectfill(x+2,y+(h/2),x+w-2,y,12)
-   -- -- side hitboxes
-   -- rectfill(x,y+2,x+w/2,y+h-2, 11)
-   -- rectfill(x+w/2,y+2,x+w,y+h-2, 10)
+
   end,
   update=function(self)
    if btn(0) then
@@ -44,14 +36,10 @@ function _init()
    if btn(1) then
     self.x+=self.move_speed
    end
-   if btn(2) then
-    self.y-=self.move_speed
-   end
-   if btn(3) then
-    self.y+=self.move_speed
-   end
 
-   -- self.y+=1
+   -- velocity
+   self.x+=self.vx
+   self.y+=self.yx
 
   end,
    -- check hit detection
@@ -98,8 +86,8 @@ function _init()
  mandarins={}
 
  local i
- for i=4,6 do
-  add(coins, make_coin(9*i,82))
+ for i=1,3 do
+  add(coins, make_coin(25+10*i,82))
  end
  -- for i=1,2 do
  --  add(mandarins,make_mandarin(8*1,80))
