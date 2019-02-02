@@ -70,21 +70,33 @@ function _init()
  end,
 
  check_for_block_collision=function(self, block)
-  if bounding_boxes_overlapping(self,block) then
-   local top_hitbox={
-    x+2,y+(h/2),x+w-2,y+h
-   }
-   -- top hitbox
-   local bottom_hitbox={
-    x+2,y+(h/2),x+w-2,y
-   }
-   -- side hitboxes
-   local left_hitbox={
-    x,y+2,x+w/2,y+h-2
-   }
-   local right_hitbox={
-    x+w/2,y+2,x+w,y+h-2
-   }
+  local x,y,w,h=self.x,self.y,self.width,self.height
+  local top_hitbox={
+   x=x+2,y=y,width=w-4,height=h/2
+  }
+  -- top hitbox
+  local bottom_hitbox={
+   x=x+2,y=y+h/2,width=w-4,height=h/2
+  }
+  -- side hitboxes
+  local left_hitbox={
+   x=x,y=y+2,width=w/2,height=h-4
+  }
+  local right_hitbox={
+   x=x+w/2,y=y+2,width=w/2,height=h-4
+  }
+  -- collisions
+  if bounding_boxes_overlapping(top_hitbox,block) then
+   self.y=block.y+block.height
+  end
+  if bounding_boxes_overlapping(bottom_hitbox,block) then
+   self.y=block.y-self.height
+  end
+  if bounding_boxes_overlapping(left_hitbox,block) then
+   self.x=block.x+block.width
+  end
+  if bounding_boxes_overlapping(right_hitbox,block) then
+   self.x=block.x-self.width
   end
 
  end
@@ -102,7 +114,7 @@ function _init()
  }
  -- blocks
  blocks={
-  make_block(50,50),
+  make_block(50,80),
   make_block(50,40)
  }
 
